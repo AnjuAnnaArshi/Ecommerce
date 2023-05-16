@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metadescription %}
+    This is your cart
+{% endblock %}
+{% block title %}
+    Add products to buy
+{% endblock %}
+{% block content %}
+{% if not cart_items %}
+<div>
+    <div class="text-center">
+        <h1 class="text-center my_title">Your cart is empty....Please add items to it</h1>
+        <br>
+        <p class="text-center">
+           <a href="{% url 'shop:allproducts' %}">Click here</a> to continue shopping...
+        </p>
+    </div>
+    {% else %}
+    <div>
+        <div class="text-center">
+            <h1 class="text-center my_title">Your Cart contains...</h1>
+            <br>
+        </div>
+        <div class="row mx-auto">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+                <table class="table my_custom_table">
+                    <thead class="my_custom_thead">
+                    <tr><td colspan="5">Your Items</td> </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in cart_items %}
+                    <tr><td>
+                        <a href="{{ i.prdts.get_absolute_url }}"><img src="{{i.prdts.img.url}}" alt="" class="float-left rounded custom_image"></a>
+                    </td>
+                    <td class="text-left">{{i.prdts.name}}<br>SKU : {{i.prdts.id}}<br>Price Rs.{{i.prdts.price}}<br>
+                        Qty : {{i.quantity}}* {{i}}
+                    </td>
+                    <td>Rs.{{i.subtotal}}</td>
+                        {% if i.quantity < i.prdts.stock %}
+                    <td>
+                        <a href="{% url 'cart:add_cart' i.prdts.id %}" class="custom_a"><i class="fa fa-plus"></i></a>&nbsp;
+                        <a href="{% url 'cart:remove_cart' i.prdts.id %}" class="custom_a"><i class="fa fa-minus"></i></a>&nbsp;
+                        <a href="{% url 'cart:full_remove' i.prdts.id %}" class="custom_a"><i class="fa fa-trash"></i></a>
+                    </td>
+                        {% else %}
+                    <td>
+                        <a href="{% url 'cart:remove_cart' i.prdts.id %}" class="custom_a"><i class="fa fa-minus custom_icon"></i></a>&nbsp;
+                        <a href="{% url 'cart:full_remove' i.prdts.id %}" class="custom_a"><i class="fa fa-trash custom_icon"></i></a>
+                    </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+                <table class="table my_custom_table">
+                    <thead class="my_custom_thead">
+                    <tr>
+                        <th>Checkout</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Please review your items before order placed..</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            Your Total is : Rs <strong>{{total}}</strong>/-
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mx-auto">
+                    <a href="{% url 'shop:allproducts' %}" class="btn btn-secondary my_custom_button">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
